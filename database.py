@@ -1,6 +1,7 @@
 import sqlite3
 from typing import List, Dict, Optional, Tuple
 from datetime import datetime
+import hashlib
 
 class Database:
     def __init__(self, db_path: str = "quiz.db"):
@@ -84,11 +85,20 @@ class Database:
         """)
         
         cursor.execute("SELECT COUNT(*) FROM users WHERE role = 'admin'")
-        if cursor.fetchone()[0] == 0:
+        admin_count = cursor.fetchone()[0]
+        admin_password_hash = hashlib.sha256('admin'.encode()).hexdigest()
+        
+        if admin_count == 0:
             cursor.execute("""
                 INSERT INTO users (username, password, role)
-                VALUES ('admin', 'admin', 'admin')
-            """)
+                VALUES ('admin', ?, 'admin')
+            """, (admin_password_hash,))
+        else:
+            cursor.execute("""
+                UPDATE users 
+                SET password = ? 
+                WHERE username = 'admin' AND (password = 'admin' OR LENGTH(password) != 64)
+            """, (admin_password_hash,))
         
         conn.commit()
         conn.close()

@@ -9,17 +9,12 @@ A comprehensive quiz management system built with Python, Tkinter, and SQLite. F
 ![ER Diagram](er_diagram.svg)
 
 ### E/R Model
-Users(id, username, password, role)
-
-Quizzes(id, title, description, created_by, created_at)
-
-Questions(id, quiz_id, question_text, question_type, points)
-
-Options(id, question_id, option_text, is_correct)
-
-Responses(id, user_id, question_id, selected_option_id, response_time)
-
-Scores(id, user_id, quiz_id, score, total_points, completed_at)
+* Users(<u>id</u>, username, password, role)
+* Quizzes(<u>id</u>, title, description, created_by, created_at)
+* Questions(<u>id</u>, quiz_id, question_text, question_type, points)
+* Options(<u>id</u>, question_id, option_text, is_correct)
+* Responses(<u>id</u>, user_id, question_id, selected_option_id, response_time)
+* Scores(<u>id</u>, user_id, quiz_id, score, total_points, completed_at)
 
 ### Relational Model (3NF)
 
