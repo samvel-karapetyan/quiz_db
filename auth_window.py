@@ -1,10 +1,15 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from typing import Callable, Optional
+import hashlib
 from database import Database
 from styles import StyleManager
 
 class AuthWindow:
+    @staticmethod
+    def hash_password(password: str) -> str:
+        return hashlib.sha256(password.encode()).hexdigest()
+    
     def __init__(self, db: Database, on_success: Callable):
         self.db = db
         self.on_success = on_success
@@ -67,7 +72,8 @@ class AuthWindow:
             messagebox.showerror("Error", "Please enter both username and password")
             return
         
-        user = self.db.authenticate_user(username, password)
+        hashed_password = self.hash_password(password)
+        user = self.db.authenticate_user(username, hashed_password)
         if user:
             self.current_user = user
             role_text = "Administrator" if user["role"] == "admin" else "User"
@@ -90,7 +96,8 @@ class AuthWindow:
             return
         
         try:
-            self.db.create_user(username, password, "user")
+            hashed_password = self.hash_password(password)
+            self.db.create_user(username, hashed_password, "user")
             messagebox.showinfo("Success", "Registration successful! Please login.")
             self.password_entry.delete(0, tk.END)
         except ValueError as e:
